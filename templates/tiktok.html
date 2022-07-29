@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/static/css/index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css"
+        integrity="sha512-BnbUDfEUfV0Slx6TunuB042k9tuKe3xrD6q4mg5Ed72LTgzDIcLPxg6yI2gcMFRyomt+yJJxE+zJwNmxki6/RA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css">
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container-fluid loading" id="loading">
+        <div class="row d-flex vh-100 align-items-center text-center justify-content-center">
+            <div class="card card-loading">
+                <div class="card-body">
+                    <img src="https://i.pinimg.com/originals/fc/71/63/fc71635c7f1b09ed30413f59bb749582.gif" width="200px" alt="">
+                    <p class="pt-2">Getting data from: <span id="showValue"></span></p>
+                    <small>It take a few minutes</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand mb-5">
+                    <img src="/static/assets/cretivox-black.png" alt="" />
+                </li>
+                <li class="">
+                    <a href="index.html">
+                        <i class="fab fa-home"></i>
+                        Home
+                    </a>
+                </li>
+                <li class="">
+                    <a href="ig.html" >
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="tiktok.html" >
+                        <i class="fab fa-tiktok"></i>
+                        TikTok
+                    </a>
+                </li>
+                <li class="">
+                    <a href="#" class="text-danger" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div id="mybutton">
+                    <a href="#menu-tootle" id="menu-toggle" class="btn btn-secondary feedback">Hide or Show menu</a>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <section id="opening">
+                            <div class="card card-opening">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col col-lg-12">
+                                            {% with messages = get_flashed_messages() %}
+                                            {% if messages %}
+                                            {% for message in messages %}
+                                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                                <strong>Sorry :((</strong> {{ message }}
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            {% endfor%}
+                                            {% endif %}
+                                            {% endwith%}
+                                            {% block body %}{% endblock %}
+                                        </div>
+                                        <div class="col-lg-5 text-center">
+                                            <img src="http://tricolortimes.com/wp-content/uploads/2020/02/Reviews_Larsen-Whitnie_TikTok.svg"
+                                                alt="">
+                                            <h4><strong>TikTok Analytics</strong></h4>
+                                            <p>Beta Version 1.6</p>
+                                        </div>
+                                        <div class="col-lg-7">
+                                            <form action="{{ url_for('tiktok')}}" method="post"
+                                                onsubmit="return submitform()">
+                                                <div class="form-group">
+                                                    <label for="usernameIg">Username TikTok</label>
+                                                    <input name="usrname" type="text" class="form-control" id="usernameIg"
+                                                        aria-describedby="emailHelp" placeholder="Enter username"
+                                                        required>
+                                                    <small id="emailHelp" class="form-text text-muted">Input only
+                                                        username TikTok, example "cretivox".</small>
+                                                </div>
+                                                <button type="submit" class="btn royal btn-block btn-lg">Submit</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                {% if name %}
+                <div class="download-container">
+                    <div class="row pb-4 pt-1">
+                        <div class="col-lg-2 pt-4 pt-lg-0 order-2 order-lg-1">
+                            <div class="card text-center h-100 p-0">
+                                <div class="card-body card-rank">
+                                    <div class="info">
+                                        <a href="" class="btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fas fa-info-circle fa-2x"></i></a>
+                                    </div>
+                                    <div class="frame-count">
+                                        <p class="text-light">Avg Earnings Per Post</p>
+                                        <p id="earnings"></p>
+                                       <p class="text-light" id="tierInfluencer-tiktok"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-lg-10 order-lg-2 order-1">
+                            <div class="card h-100">
+                                <div class="card-body profile-card">
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-3">
+                                            <img class="profile-picture" src="{{pict}}" width="150" alt="">
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <div class="first py-md-3">
+                                                <h4><strong>{{name}}</strong></h4>
+                                                <p><a href="https://{{link}}">{{link}}</a></p>
+                                            </div>
+                                            <p class="biography" id="biography"><strong>Bio:</strong>
+                                                {{bio}}
+                                            </p>
+                                        </div>
+                                        <div class="col-lg-1 py-2 py-lg-0">
+                                            <a href=""><i class="fas fa-download fa-2x downloader download-btn"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-6 col-12 col-md-6">
+                            <div class="card card-grid">
+                                <div class="card-body">
+                                    <p class="list-text"><i class="fas fa-user-friends icon-list"></i>Followers:
+                                    </p>
+                                    <p class="data-static">
+                                        {{follower}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-12 col-md-6">
+                            <div class="card card-grid">
+                                <div class="card-body">
+                                    <p class="list-text"><i class="fas fa-photo-video icon-list"></i>Media
+                                        Count:
+                                    </p>
+                                    <p class="data-static">
+                                        {{post}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-12 col-md-6">
+                            <div class="card card-grid">
+                                <div class="card-body">
+                                    <p class="list-text"><i class="fas fa-percentage icon-list"></i>ER Views:
+                                    </p>
+                                    <p class="data-static">
+                                        {{ER_view}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-12 col-md-6">
+                            <div class="card card-grid">
+                                <div class="card-body">
+                                    <p class="list-text"><i class="fas fa-thumbs-up icon-list"></i>Avg
+                                        Likes:
+                                    </p>
+                                    <p class="data-static" id="avgLikes">
+                                        {{like}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card h-100 card-chart">
+                                <div class="card-body">
+                                    <p>
+                                    <div>
+                                        <canvas id="chart-tiktok"></canvas>
+                                    </div>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-4">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Post</th>
+                                                <th scope="col">Caption</th>
+                                                <th scope="col">Link</th>
+                                                <th scope="col">Like</th>
+                                                <th scope="col">Comments</th>
+                                                <th scope="col">Views</th>
+                                                <th scope="col">Share</th>
+                                                <th scope="col">ER</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="table-row">
+                                                <td scope="row">1</td>
+                                                <td><img src="{{post_1}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_1}}</td>
+                                                <td><a href="{{link_1}}" target="_blank">Link</a></td>
+                                                <td>{{like_1}}</td>
+                                                <td>{{comment_1}}</td>
+                                                <td>{{view_1}}</td>
+                                                <td>{{share_1}}</td>
+                                                <td>{{erp_1}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">2</td>
+                                                <td><img src="{{post_2}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_2}}</td>
+                                                <td><a href="{{link_2}}" target="_blank">Link</a></td>
+                                                <td>{{like_2}}</td>
+                                                <td>{{comment_2}}</td>
+                                                <td>{{view_2}}</td>
+                                                <td>{{share_2}}</td>
+                                                <td>{{erp_2}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">3</td>
+                                                <td><img src="{{post_3}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_3}}</td>
+                                                <td><a href="{{link_3}}" target="_blank">Link</a></td>
+                                                <td>{{like_3}}</td>
+                                                <td>{{comment_3}}</td>
+                                                <td>{{view_3}}</td>
+                                                <td>{{share_3}}</td>
+                                                <td>{{erp_3}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">4</td>
+                                                <td><img src="{{post_4}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_4}}</td>
+                                                <td><a href="{{link_4}}" target="_blank">Link</a></td>
+                                                <td>{{like_4}}</td>
+                                                <td>{{comment_4}}</td>
+                                                <td>{{view_4}}</td>
+                                                <td>{{share_4}}</td>
+                                                <td>{{erp_4}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">5</td>
+                                                <td><img src="{{post_5}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_5}}</td>
+                                                <td><a href="{{link_5}}" target="_blank">Link</a></td>
+                                                <td>{{like_5}}</td>
+                                                <td>{{comment_5}}</td>
+                                                <td>{{view_5}}</td>
+                                                <td>{{share_5}}</td>
+                                                <td>{{erp_5}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">6</td>
+                                                <td><img src="{{post_6}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_6}}</td>
+                                                <td><a href="{{link_6}}" target="_blank">Link</a></td>
+                                                <td>{{like_6}}</td>
+                                                <td>{{comment_6}}</td>
+                                                <td>{{view_6}}</td>
+                                                <td>{{share_6}}</td>
+                                                <td>{{erp_6}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">7</td>
+                                                <td><img src="{{post_7}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_7}}</td>
+                                                <td><a href="{{link_7}}" target="_blank">Link</a></td>
+                                                <td>{{like_7}}</td>
+                                                <td>{{comment_7}}</td>
+                                                <td>{{view_7}}</td>
+                                                <td>{{share_7}}</td>
+                                                <td>{{erp_7}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">8</td>
+                                                <td><img src="{{post_8}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_8}}</td>
+                                                <td><a href="{{link_8}}" target="_blank">Link</a></td>
+                                                <td>{{like_8}}</td>
+                                                <td>{{comment_8}}</td>
+                                                <td>{{view_8}}</td>
+                                                <td>{{share_8}}</td>
+                                                <td>{{erp_8}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">9</td>
+                                                <td><img src="{{post_9}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_9}}</td>
+                                                <td><a href="{{link_9}}" target="_blank">Link</a></td>
+                                                <td>{{like_9}}</td>
+                                                <td>{{comment_9}}</td>
+                                                <td>{{view_9}}</td>
+                                                <td>{{share_9}}</td>
+                                                <td>{{erp_9}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">10</td>
+                                                <td><img src="{{post_10}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_10}}</td>
+                                                <td><a href="{{link_10}}" target="_blank">Link</a></td>
+                                                <td>{{like_10}}</td>
+                                                <td>{{comment_10}}</td>
+                                                <td>{{view_10}}</td>
+                                                <td>{{share_10}}</td>
+                                                <td>{{erp_10}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">11</td>
+                                                <td><img src="{{post_11}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_11}}</td>
+                                                <td><a href="{{link_11}}" target="_blank">Link</a></td>
+                                                <td>{{like_11}}</td>
+                                                <td>{{comment_11}}</td>
+                                                <td>{{view_11}}</td>
+                                                <td>{{share_11}}</td>
+                                                <td>{{erp_11}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">12</td>
+                                                <td><img src="{{post_12}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_12}}</td>
+                                                <td><a href="{{link_12}}" target="_blank">Link</a></td>
+                                                <td>{{like_12}}</td>
+                                                <td>{{comment_12}}</td>
+                                                <td>{{view_12}}</td>
+                                                <td>{{share_12}}</td>
+                                                <td>{{erp_12}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">13</td>
+                                                <td><img src="{{post_13}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_13}}</td>
+                                                <td><a href="{{link_13}}" target="_blank">Link</a></td>
+                                                <td>{{like_13}}</td>
+                                                <td>{{comment_13}}</td>
+                                                <td>{{view_13}}</td>
+                                                <td>{{share_13}}</td>
+                                                <td>{{erp_13}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">14</td>
+                                                <td><img src="{{post_14}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_14}}</td>
+                                                <td><a href="{{link_14}}" target="_blank">Link</a></td>
+                                                <td>{{like_14}}</td>
+                                                <td>{{comment_14}}</td>
+                                                <td>{{view_14}}</td>
+                                                <td>{{share_14}}</td>
+                                                <td>{{erp_14}}</td>
+                                            </tr>
+                                            <tr class="table-row">
+                                                <td scope="row">15</td>
+                                                <td><img src="{{post_15}}" height="auto" alt=""></td>
+                                                <td class="box">{{caption_15}}</td>
+                                                <td><a href="{{link_15}}" target="_blank">Link</a></td>
+                                                <td>{{like_15}}</td>
+                                                <td>{{comment_15}}</td>
+                                                <td>{{view_15}}</td>
+                                                <td>{{share_15}}</td>
+                                                <td>{{erp_15}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Average ER Instagram</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <img class="img-er" src="../static/assets/ER.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="" id="created-element" style="visibility: hidden;" />
+                </div>
+                {% else %}
+                <!-- Before -->
+                <div class="download-container">
+                    <div class="row pb-4 pt-1">
+                        <div class="col col-lg-12 order-lg-2 order-1">
+                            <div class="card h-100">
+                                <div class="card-body profile-card">
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-3">
+                                            <img class="profile-picture" src="https://via.placeholder.com/150x150" width="150" alt="">
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <div class="first py-md-3">
+                                                <h4><strong>No Data</strong></h4>
+                                                <!-- <p><a href="https://{{link}}">{{link}}</a></p> -->
+                                            </div>
+                                            <p class="biography" id="biography"><strong>Bio:</strong>
+                                                No Data..
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-6 col-12 col-md-6">
+                            <div class="card card-grid">
+                                <div class="card-body">
+                                    <p class="list-text"><i class="fas fa-user-friends icon-list"></i>Followers:
+                                    </p>
+                                    <p class="data-static">
+                                        -
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-12 col-md-6">
+                            <div class="card card-grid">
+                                <div class="card-body">
+                                    <p class="list-text"><i class="fas fa-photo-video icon-list"></i>Media
+                                        Count:
+                                    </p>
+                                    <p class="data-static">
+                                        -
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-12 col-md-6">
+                            <div class="card card-grid">
+                                <div class="card-body">
+                                    <p class="list-text"><i class="fas fa-percentage icon-list"></i>ER Views:
+                                    </p>
+                                    <p class="data-static">
+                                        -
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-12 col-md-6">
+                            <div class="card card-grid">
+                                <div class="card-body">
+                                    <p class="list-text"><i class="fas fa-thumbs-up icon-list"></i>Avg
+                                        Likes:
+                                    </p>
+                                    <p class="data-static">
+                                        -
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card h-100 card-chart">
+                                <div class="card-body">
+                                    <p>
+                                    <div>
+                                        <canvas id="myChart2"></canvas>
+                                    </div>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                </div>
+
+        </div>
+            <!-- /#page-content-wrapper -->
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.0.0.slim.js"
+        integrity="sha256-Gp6hp0H+A7axg1tErCucWeOc38irtkVWpUbBZSj8KCg=" crossorigin="anonymous"></script>
+    <script src="/static/js/index.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
